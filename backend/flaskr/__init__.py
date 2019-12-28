@@ -58,18 +58,20 @@ def create_app(test_config=None):
             'total_questions': len(Question.query.all()),
             'categories': categories
         })
-    '''
-    @TODO: 
-    Create an endpoint to handle GET requests for questions, 
-    including pagination (every 10 questions). 
-    This endpoint should return a list of questions, 
-    number of total questions, current category, categories. 
-  
-    TEST: At this point, when you start the application
-    you should see questions and categories generated,
-    ten questions per page and pagination at the bottom of the screen for three pages.
-    Clicking on the page numbers should update the questions. 
-    '''
+
+    @app.route('/questions/<int:question_id>', methods=['DELETE'])
+    def delete_question(question_id):
+
+        question = Question.query.filter_by(id=question_id).first()
+        try:
+            question.delete()
+
+            return jsonify({
+                "success": True
+            })
+        except:
+            abort(500)
+
 
     '''
     @TODO: 
@@ -136,7 +138,6 @@ def create_app(test_config=None):
             "message": "error not found"
         }), 404
 
-
     @app.errorhandler(422)
     def unprocessable(error):
         return jsonify({
@@ -153,6 +154,13 @@ def create_app(test_config=None):
             "message": "bad request"
         }), 400
 
+    @app.errorhandler(500)
+    def internal_error(error):
+        return jsonify({
+            "success": False,
+            "error": 500,
+            "message": "internal server error"
+        })
     return app
 
     
