@@ -89,7 +89,6 @@ def create_app(test_config=None):
     @app.route('/search', methods=['POST'])
     def search_questions():
         body = request.get_json()
-        print(body)
         search = body.get('searchTerm', None)
         try:
             if search:
@@ -106,15 +105,21 @@ def create_app(test_config=None):
         except:
             abort(404)
 
-    '''
-    @TODO: 
-    Create a GET endpoint to get questions based on category. 
-  
-    TEST: In the "List" tab / main screen, clicking on one of the 
-    categories in the left column will cause only questions of that 
-    category to be shown. 
-    '''
+    @app.route('/categories/<int:category_id>/questions')
+    def get_questions_by_category(category_id):
+        try:
 
+            questions = Question.query.order_by(Question.id).filter_by(category=category_id)
+            current_category = [question.category for question in questions]
+
+            return jsonify({
+                "questions": [question.format() for question in questions.all()],
+                "total_questions": len(questions.all()),
+                "current_category": current_category
+            })
+
+        except:
+            abort(404)
 
     '''
     @TODO: 
