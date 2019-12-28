@@ -29,19 +29,14 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
         return response
 
-    '''
-    @TODO:
-    Create an endpoint to handle GET requests
-    for all available categories.
-    '''
+
     @app.route('/categories')
     def retrive_categories():
         categories = Category.query.all()
 
-        data = {item.id: item.category for item in categories}
+        data = {item.id: item.type for item in categories}
 
         return jsonify({
-            'success': True,
             'categories': data
         })
 
@@ -50,14 +45,18 @@ def create_app(test_config=None):
         selection = Question.query.order_by(Question.id).all()
         current_questions = question_pagination(request, selection)
 
+        category_objects = Category.query.order_by(Category.id).all()
+        categories = {item.id: item.type for item in category_objects}
+        current_categories = [question['category'] for question in current_questions]
+
         if len(current_questions) == 0:
             abort(404)
 
         return jsonify({
-            'current_category': ['4234', 'fsdf'],
+            'current_category': current_categories,
             'questions': current_questions,
             'total_questions': len(Question.query.all()),
-            'categories': ['43', '34']
+            'categories': categories
         })
     '''
     @TODO: 
@@ -129,6 +128,30 @@ def create_app(test_config=None):
     Create error handlers for all expected errors 
     including 404 and 422. 
     '''
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({
+            "success": False,
+            "error": 404,
+            "message": "error not found"
+        }), 404
+
+
+    @app.errorhandler(422)
+    def unprocessable(error):
+        return jsonify({
+            "success": False,
+            "error": 422,
+            "message": "unprocessable"
+        }), 422
+
+    @app.errorhandler(400)
+    def bad_request(error):
+        return jsonify({
+            "success": False,
+            "error": 400,
+            "message": "bad request"
+        }), 400
 
     return app
 
