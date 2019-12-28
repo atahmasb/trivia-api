@@ -41,7 +41,7 @@ def create_app(test_config=None):
         })
 
     @app.route('/questions')
-    def retrieve_books():
+    def retrieve_questions():
         selection = Question.query.order_by(Question.id).all()
         current_questions = question_pagination(request, selection)
 
@@ -151,7 +151,7 @@ def create_app(test_config=None):
         return jsonify({
             "success": False,
             "error": 404,
-            "message": "error not found"
+            "message": "resource not found"
         }), 404
 
     @app.errorhandler(422)
