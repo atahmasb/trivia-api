@@ -121,17 +121,30 @@ def create_app(test_config=None):
         except:
             abort(404)
 
-    '''
-    @TODO: 
-    Create a POST endpoint to get questions to play the quiz. 
-    This endpoint should take category and previous question parameters 
-    and return a random questions within the given category, 
-    if provided, and that is not one of the previous questions. 
-  
-    TEST: In the "Play" tab, after a user selects "All" or a category,
-    one question at a time is displayed, the user is allowed to answer
-    and shown whether they were correct or not. 
-    '''
+    @app.route('/quizzes', methods=['POST'])
+    def get_quiz_question():
+        body = request.get_json()
+        previous_questions = body.get('previous_questions', [])
+        quiz_category = body.get('quiz_category', None)
+
+        try:
+            if quiz_category:
+                if quiz_category['id'] == 0:
+                    selections = Question.query.all()
+                else:
+                    selections = Question.query.filter_by(category=quiz_category['id']).all()
+
+            options =  [question.format() for question in selections if question.id not in previous_questions]
+            if len(options) == 0:
+                return jsonify({
+                    'question': False
+                })
+            result = random.choice(options)
+            return jsonify({
+                'question': result
+            })
+        except:
+            abort(500)
 
     @app.errorhandler(404)
     def not_found(error):
