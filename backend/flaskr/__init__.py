@@ -63,11 +63,16 @@ def create_app(test_config=None):
     def delete_question(question_id):
 
         question = Question.query.filter_by(id=question_id).first()
+
+        if not question:
+            return abort(404)
         try:
+            question_id = question.id
             question.delete()
 
             return jsonify({
-                "success": True
+                "success": True,
+                "id": question_id
             })
         except:
             abort(500)
