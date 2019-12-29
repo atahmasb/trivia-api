@@ -61,3 +61,69 @@ createdb trivia_test
 psql trivia_test < trivia.psql
 python test_flaskr.py
 ```
+
+## API Reference
+### Getting Started
+- Base URL: At present this app can only be run locally and is not hosted as a base URL. The backend app is hosted at the default, http://127.0.0.1:5000/, which is set as a proxy in the frontend configuration.
+- Authentication: This version of the application does not require authentication or API keys.
+### Error Handling
+Errors are returned as JSON objects in the following format:
+
+```
+{
+    "success": False, 
+    "error": 400,
+    "message": "bad request"
+}
+```
+The API will return three error types when requests fail:
+
+- 400: Bad Request
+- 404: Resource Not Found
+- 422: Unprocessable
+- 500: Internal server error
+
+### Endpoints
+
+#### GET/questions
+- General:
+  - Returns a list of question objects, total number of questions, current categories of selected questions, and all categories.
+  - Results are paginated in groups of 10. Include a request argument to choose page number, starting from 1.
+- Sample: `curl http://127.0.0.1:5000/questions`
+
+#### GET/categories
+- General:
+  - Returns a list of categories objects.
+- Sample: `curl http://127.0.0.1:5000/categories`
+
+#### GET/categories/{category_id}/questions
+- General:
+  - Returns a list of question objects belonging to `category_id`. Returns questions, total number of questions and current categories of selected  questions.
+- Sample: `curl http://127.0.0.1:5000/categories`
+
+
+#### POST/questions
+- General:
+    - Creates a new question using the submitted question, answer, difficulty and category. Returns success value.
+- Sample `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d {
+            'question': 'is this a test question?',
+            'answer': 'yes',
+            'difficulty': 5,
+            'category': 1,
+        }`
+        
+#### POST/search
+- General:
+    - search for questions based on submitted search term and returns questions, total questions, and current categories of returned questions.
+- Sample `curl http://127.0.0.1:5000/search -X POST -H "Content-Type: application/json" -d {
+            'searchTerm': 'Novel'}`
+    
+#### POST/quizzes
+- General: 
+     - Returns a random question that user has not seen yet from the selected category that user has chosen. Frontend needs to submit `previous_questions` and `quiz_category`.
+- Sample  `curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d {"previous_questions": [15, 16, 17], "quiz_category": {'id': 1, 'type': 'Science'}}`
+
+#### DELETE/questions/{questions_id}
+- General:
+  - Deletes the question bu using the passed `question_id` and returns the `question_id` and success value.
+- Sample: `curl -X DELETE http://127.0.0.1:5000/categores/1/questions`

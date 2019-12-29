@@ -106,7 +106,7 @@ def create_app(test_config=None):
                     "current_category": current_category
                 })
             else:
-                    abort(404)
+                abort(404)
         except:
             abort(404)
 

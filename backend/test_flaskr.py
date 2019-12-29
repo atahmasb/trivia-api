@@ -47,13 +47,13 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().get('/questions?page=100')
         self.assertEqual(res.status_code, 404)
 
-    # def test_delete_question(self):
-    #     # make sure there is a question with this id in the db, otherwise the test will fail.
-    #     res = self.client().delete('/questions/29')
-    #     data = json.loads(res.data)
-    #
-    #     self.assertEqual(data['success'], True)
-    #     self.assertEqual(data['id'], 29)
+    def test_delete_question(self):
+        # make sure there is a question with this id in the db, otherwise the test will fail.
+        res = self.client().delete('/questions/40')
+        data = json.loads(res.data)
+
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['id'], 40)
 
     def test_delete_question_failed(self):
         res = self.client().delete('/questions/100')
@@ -105,6 +105,15 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'resource not found')
+
+    def test_search(self):
+        res = self.client().post('/search', json={'searchTerm': "is"})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(type(data['total_questions']), int)
+        self.assertTrue(data['current_category'])
+        self.assertTrue(data['questions'])
 
     def test_quizzes(self):
         res = self.client().post('/quizzes', json={"previous_questions": [15, 16, 17], "quiz_category": {'id': 1, 'type': 'Science'}})
