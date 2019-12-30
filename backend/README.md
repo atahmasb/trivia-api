@@ -89,41 +89,224 @@ The API will return three error types when requests fail:
 - General:
   - Returns a list of question objects, total number of questions, current categories of selected questions, and all categories.
   - Results are paginated in groups of 10. Include a request argument to choose page number, starting from 1.
-- Sample: `curl http://127.0.0.1:5000/questions`
+- Sample: `curl http://127.0.0.1:5000/questions?page=1`
+- Output 
+```
+{
+  "categories": {
+    "1": "Science", 
+    "2": "Art", 
+    "3": "Geography", 
+    "4": "History", 
+    "5": "Entertainment", 
+    "6": "Sports"
+  }, 
+  "current_category": [
+    5, 
+    4, 
+    5, 
+    4, 
+    6, 
+    6, 
+    4, 
+    3, 
+    3, 
+    3
+  ], 
+  "questions": [
+    {
+      "answer": "Tom Cruise", 
+      "category": 5, 
+      "difficulty": 4, 
+      "id": 4, 
+      "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+    }, 
+    {
+      "answer": "Maya Angelou", 
+      "category": 4, 
+      "difficulty": 2, 
+      "id": 5, 
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    }, 
+    {
+      "answer": "Edward Scissorhands", 
+      "category": 5, 
+      "difficulty": 3, 
+      "id": 6, 
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    }, 
+    {
+      "answer": "Muhammad Ali", 
+      "category": 4, 
+      "difficulty": 1, 
+      "id": 9, 
+      "question": "What boxer's original name is Cassius Clay?"
+    }, 
+    {
+      "answer": "Brazil", 
+      "category": 6, 
+      "difficulty": 3, 
+      "id": 10, 
+      "question": "Which is the only team to play in every soccer World Cup tournament?"
+    }, 
+    {
+      "answer": "Uruguay", 
+      "category": 6, 
+      "difficulty": 4, 
+      "id": 11, 
+      "question": "Which country won the first ever soccer World Cup in 1930?"
+    }, 
+    {
+      "answer": "George Washington Carver", 
+      "category": 4, 
+      "difficulty": 2, 
+      "id": 12, 
+      "question": "Who invented Peanut Butter?"
+    }, 
+    {
+      "answer": "Lake Victoria", 
+      "category": 3, 
+      "difficulty": 2, 
+      "id": 13, 
+      "question": "What is the largest lake in Africa?"
+    }, 
+    {
+      "answer": "The Palace of Versailles", 
+      "category": 3, 
+      "difficulty": 3, 
+      "id": 14, 
+      "question": "In which royal palace would you find the Hall of Mirrors?"
+    }, 
+    {
+      "answer": "Agra", 
+      "category": 3, 
+      "difficulty": 2, 
+      "id": 15, 
+      "question": "The Taj Mahal is located in which Indian city?"
+    }
+  ], 
+  "total_questions": 18
+}
+
+```
 
 #### GET/categories
 - General:
   - Returns a list of categories objects.
 - Sample: `curl http://127.0.0.1:5000/categories`
+- Output
+``` 
+{
+  "categories": {
+    "1": "Science", 
+    "2": "Art", 
+    "3": "Geography", 
+    "4": "History", 
+    "5": "Entertainment", 
+    "6": "Sports"
+  }
+}
+```
 
 #### GET/categories/{category_id}/questions
 - General:
   - Returns a list of question objects belonging to `category_id`. Returns questions, total number of questions and current categories of selected  questions.
-- Sample: `curl http://127.0.0.1:5000/categories`
+- Sample: `curl http://127.0.0.1:5000/categories/1/questions`
+- Output
+``` 
+{
+  "current_category": [
+    1, 
+    1, 
+    1
+  ], 
+  "questions": [
+    {
+      "answer": "The Liver", 
+      "category": 1, 
+      "difficulty": 4, 
+      "id": 20, 
+      "question": "What is the heaviest organ in the human body?"
+    }, 
+    {
+      "answer": "Alexander Fleming", 
+      "category": 1, 
+      "difficulty": 3, 
+      "id": 21, 
+      "question": "Who discovered penicillin?"
+    }, 
+    {
+      "answer": "Blood", 
+      "category": 1, 
+      "difficulty": 4, 
+      "id": 22, 
+      "question": "Hematology is a branch of medicine involving the study of what?"
+    }
+  ], 
+  "total_questions": 3
+}
+
+```
 
 
 #### POST/questions
 - General:
     - Creates a new question using the submitted question, answer, difficulty and category. Returns success value.
-- Sample `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d {
-            'question': 'is this a test question?',
-            'answer': 'yes',
-            'difficulty': 5,
-            'category': 1,
-        }`
-        
+- Sample `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question": "is this a test question?", "answer":"yes", "difficulty":"5", "category":"1"}'`
+- Output
+``` 
+{
+  "success": true
+}
+```
+ 
 #### POST/search
 - General:
     - search for questions based on submitted search term and returns questions, total questions, and current categories of returned questions.
-- Sample `curl http://127.0.0.1:5000/search -X POST -H "Content-Type: application/json" -d {
-            'searchTerm': 'Novel'}`
-    
+- Sample `http://127.0.0.1:5000/search -X POST -H "Content-Type: application/json" -d '{"searchTerm":"study"}'`
+ Output 
+ ``` 
+ {
+  "current_category": [
+    1
+  ], 
+  "questions": [
+    {
+      "answer": "Blood", 
+      "category": 1, 
+      "difficulty": 4, 
+      "id": 22, 
+      "question": "Hematology is a branch of medicine involving the study of what?"
+    }
+  ], 
+  "total_questions": 1
+}
+```
 #### POST/quizzes
 - General: 
      - Returns a random question that user has not seen yet from the selected category that user has chosen. Frontend needs to submit `previous_questions` and `quiz_category`.
-- Sample  `curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d {"previous_questions": [15, 16, 17], "quiz_category": {'id': 1, 'type': 'Science'}}`
+- Sample  `curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d '{"previous_questions": [15, 16, 17], "quiz_category": {"id": "1", "type": "Science"}}'`
+- Output
+``` 
+{
+  "question": {
+    "answer": "The Liver", 
+    "category": 1, 
+    "difficulty": 4, 
+    "id": 20, 
+    "question": "What is the heaviest organ in the human body?"
+  }
+}
+```
 
 #### DELETE/questions/{questions_id}
 - General:
   - Deletes the question bu using the passed `question_id` and returns the `question_id` and success value.
-- Sample: `curl -X DELETE http://127.0.0.1:5000/categores/1/questions`
+- Sample: `curl -X DELETE http://127.0.0.1:5000/questions/6`
+- Output
+``` 
+{
+  "id": 6, 
+  "success": true
+}
+```
